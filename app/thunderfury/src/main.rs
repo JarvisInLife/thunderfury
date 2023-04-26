@@ -1,7 +1,5 @@
 // main.rs
 
-mod entity;
-
 use entity::{prelude::*, *};
 use futures::executor::block_on;
 use sea_orm::{Database, DbErr, ActiveValue, EntityTrait, ActiveModelTrait};
