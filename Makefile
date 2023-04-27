@@ -1,4 +1,5 @@
 DB=DATABASE_URL=sqlite:./data/db/thunderfury.db?mode=rwc
+CLI=sea-orm-cli
 
 build:
 	cargo build
@@ -11,10 +12,10 @@ clean:
 
 migrate: orm-cli
 	mkdir -p ./data/db/
-	$(DB) sea-orm-cli migrate refresh -d app/migration
+	$(DB) $(CLI) migrate refresh -d app/migration
 
 entity: orm-cli
-	$(DB) sea-orm-cli generate entity -l -o app/entity/src
+	$(DB) $(CLI) generate entity -l -o app/entity/src
 
 orm-cli:
-	command -v sea-orm-cli > /dev/null || cargo install sea-orm-cli
+	command -v $(CLI) > /dev/null || cargo install $(CLI)
