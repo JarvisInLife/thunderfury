@@ -1,46 +1,57 @@
-// main.rs
+use std::{env, net::SocketAddr, str::FromStr};
 
-use entity::{prelude::*, *};
-use futures::executor::block_on;
-use sea_orm::{Database, DbErr, ActiveValue, EntityTrait, ActiveModelTrait};
+use axum::{
+    extract::{Path, State},
+    http::StatusCode,
+    response::Html,
+    routing::get,
+    Router, Server,
+};
+use sea_orm::{Database, DatabaseConnection};
+use tower_http::trace::TraceLayer;
+use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
-// Change this according to your database implementation,
-// or supply it as an environment variable.
-// the whole database URL string follows the following format:
-// "protocol://username:password@host:port/database"
-// We put the database name (that last bit) in a separate variable simply for convenience.
-const DATABASE_URL: &str = "sqlite:test.db?mode=rwc";
+const DATABASE_URL: &str = "sqlite:./data/db/thunderfury.db?mode=rwc";
+const RUST_LOG_KEY: &str = "RUST_LOG";
 
-async fn run() -> Result<(), DbErr> {
-    let db = Database::connect(DATABASE_URL).await?;
-
-    let happy_bakery = bakery::ActiveModel {
-        name: ActiveValue::Set("Happy Bakery".to_owned()),
-        profit_margin: ActiveValue::Set(0.0),
-        ..Default::default()
-    };
-    let res = Bakery::insert(happy_bakery).exec(&db).await?;
-
-    let sad_bakery = bakery::ActiveModel {
-        id: ActiveValue::Set(res.last_insert_id),
-        name: ActiveValue::Set("Sad Bakery".to_owned()),
-        profit_margin: ActiveValue::NotSet,
-    };
-    sad_bakery.update(&db).await?;
-
-    let john = chef::ActiveModel {
-        name: ActiveValue::Set("John".to_owned()),
-        bakery_id: ActiveValue::Set(res.last_insert_id), // a foreign key
-        ..Default::default()
-    };
-    Chef::insert(john).exec(&db).await?;
-
-    Ok(())
+#[derive(Clone)]
+struct AppState {
+    conn: DatabaseConnection,
 }
 
 #[tokio::main]
 async fn main() {
-    if let Err(err) = block_on(run()) {
-        panic!("{}", err);
-    }
+    // env::set_var(
+    //     RUST_LOG_KEY,
+    //     env::var(RUST_LOG_KEY).unwrap_or("INFO".to_string()),
+    // );
+
+    tracing_subscriber::registry()
+        .with(tracing_subscriber::EnvFilter::from_default_env())
+        .with(tracing_subscriber::fmt::layer())
+        .init();
+
+    let conn = Database::connect(DATABASE_URL)
+        .await
+        .expect("database connection failed");
+
+    let state = AppState { conn };
+
+    let app = Router::new()
+        .route("/:id", get(edit_post))
+        .layer(TraceLayer::new_for_http())
+        .with_state(state);
+
+    let addr = SocketAddr::from_str("0.0.0.0:3000").unwrap();
+    Server::bind(&addr)
+        .serve(app.into_make_service())
+        .await
+        .unwrap();
+}
+
+async fn edit_post(
+    state: State<AppState>,
+    Path(id): Path<i32>,
+) -> Result<Html<String>, (StatusCode, &'static str)> {
+    Ok(Html(format!("hello {}", id)))
 }
