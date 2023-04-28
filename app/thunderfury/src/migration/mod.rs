@@ -1,4 +1,5 @@
-pub use sea_orm_migration::prelude::*;
+use sea_orm::DatabaseConnection;
+use sea_orm_migration::prelude::*;
 
 mod m20220101_000001_create_bakery_table;
 mod m20220101_000002_create_chef_table;
@@ -13,4 +14,12 @@ impl MigratorTrait for Migrator {
             Box::new(m20220101_000002_create_chef_table::Migration),
         ]
     }
+}
+
+pub async fn fresh(db: &DatabaseConnection) -> Result<(), DbErr> {
+    Migrator::fresh(db).await
+}
+
+pub async fn up(db: &DatabaseConnection) -> Result<(), DbErr> {
+    Migrator::up(db, None).await
 }

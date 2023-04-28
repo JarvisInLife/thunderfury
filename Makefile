@@ -10,12 +10,11 @@ build-release:
 clean:
 	cargo clean
 
-migrate: orm-cli
-	mkdir -p ./data/db/
-	$(DB) $(CLI) migrate refresh -d app/migration
-
-entity: orm-cli
-	$(DB) $(CLI) generate entity -l -o app/entity/src
+migrate: build
+	./target/debug/thunderfury migrate
 
 orm-cli:
 	command -v $(CLI) > /dev/null || cargo install $(CLI)
+
+entity: migrate orm-cli
+	$(DB) $(CLI) generate entity -o app/thunderfury/src/entity

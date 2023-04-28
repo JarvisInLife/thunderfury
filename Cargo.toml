@@ -1,11 +1,2 @@
 [workspace]
-members = [
-    "app/entity",
-    "app/migration",
-    "app/thunderfury"
-]
-
-[workspace.dependencies]
-tokio = { version = "1.27.0", features = ["full"] }
-sea-orm = { version = "0.11", features = ["sqlx-sqlite", "runtime-tokio-rustls", "macros"] }
-sea-orm-migration = { version = "0.11", features = ["sqlx-sqlite", "runtime-tokio-rustls"] }
+members = [ "app/thunderfury" ]
