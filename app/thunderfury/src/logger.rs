@@ -1,11 +1,24 @@
-use std::{panic, thread};
+use std::{num::NonZeroU8, panic, thread};
 
+use time::format_description::well_known::{
+    self,
+    iso8601::{Config, EncodedConfig, TimePrecision},
+};
 use tracing::{error, level_filters::LevelFilter};
+use tracing_subscriber::fmt::time::LocalTime;
 
 const MAX_LEVEL: LevelFilter = LevelFilter::INFO;
+const CONFIG: EncodedConfig = Config::DEFAULT
+    .set_time_precision(TimePrecision::Second {
+        decimal_digits: NonZeroU8::new(3),
+    })
+    .encode();
 
 pub fn init() {
-    tracing_subscriber::fmt().with_max_level(MAX_LEVEL).init();
+    tracing_subscriber::fmt()
+        .with_timer(LocalTime::new(well_known::Iso8601::<CONFIG>))
+        .with_max_level(MAX_LEVEL)
+        .init();
 
     // catch panic and log them using tracing instead of default output to StdErr
     panic::set_hook(Box::new(|info| {
@@ -45,7 +58,7 @@ pub fn init() {
                         backtrace
                     );
                 }
-            },
+            }
             None => {
                 // without backtrace
                 if msg.starts_with("notrace - ") {
@@ -64,7 +77,7 @@ pub fn init() {
                         backtrace
                     );
                 }
-            },
+            }
         }
     }));
 }

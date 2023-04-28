@@ -3,19 +3,9 @@ use std::{net::SocketAddr, str::FromStr};
 use axum::{
     Router, Server, Extension,
 };
-use sea_orm::{Database, DatabaseConnection};
+use sea_orm::DatabaseConnection;
 use tower_http::trace::TraceLayer;
-use tracing::{info};
-
-const DATABASE_URL: &str = "sqlite:./data/db/thunderfury.db?mode=rwc";
-
-async fn init_db() -> DatabaseConnection {
-    let conn = Database::connect(DATABASE_URL)
-        .await
-        .expect("database connection failed");
-
-    conn
-}
+use tracing::info;
 
 pub async fn run(db: DatabaseConnection) {
     let app = Router::new()
