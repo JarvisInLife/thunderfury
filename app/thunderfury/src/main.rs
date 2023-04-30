@@ -1,7 +1,9 @@
+use std::error::Error;
+
 use clap::{Args, Parser, Subcommand};
 use sea_orm::{ConnectOptions, Database, DatabaseConnection};
 
-// mod api;
+mod api;
 mod config;
 mod entity;
 mod logger;
@@ -54,7 +56,7 @@ async fn init_db(data_dir: &str) -> DatabaseConnection {
         .expect("database connection failed")
 }
 
-#[tokio::main]
+#[actix_web::main]
 async fn main() {
     logger::init();
 
@@ -64,7 +66,7 @@ async fn main() {
         Commands::Server(args) => {
             let db = init_db(args.data_dir.as_str()).await;
             migration::up(&db).await.unwrap();
-            server::run(db).await;
+            server::run(db).await.unwrap();
         }
         Commands::Migrate(args) => {
             let db = init_db(args.data_dir.as_str()).await;
