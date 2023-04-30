@@ -1,5 +1,3 @@
-use std::error::Error;
-
 use clap::{Args, Parser, Subcommand};
 use sea_orm::{ConnectOptions, Database, DatabaseConnection};
 
