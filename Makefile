@@ -17,4 +17,4 @@ orm-cli:
 	command -v $(CLI) > /dev/null || cargo install $(CLI)
 
 entity: migrate orm-cli
-	$(DB) $(CLI) generate entity -o app/thunderfury/src/entity
+	$(DB) $(CLI) generate entity -o app/thunderfury/src/entity --with-serde both

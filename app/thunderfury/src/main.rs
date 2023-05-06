@@ -21,7 +21,7 @@ enum Commands {
     Server(DataDirArgs),
 
     /// Apply database changes, used for develop only
-    #[clap(hide = true)]
+    #[command(hide = true)]
     Migrate(DataDirArgs),
 }
 
@@ -30,6 +30,12 @@ struct DataDirArgs {
     /// Server data directory
     #[arg(short, long, default_value_t = String::from("./data"))]
     data_dir: String,
+}
+
+#[test]
+fn verify_cli() {
+    use clap::CommandFactory;
+    Cli::command().debug_assert()
 }
 
 async fn init_db(data_dir: &str) -> DatabaseConnection {
