@@ -1,6 +1,5 @@
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
-use time::OffsetDateTime;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Eq, Serialize, Deserialize)]
 #[sea_orm(table_name = "tv")]
@@ -15,8 +14,6 @@ pub struct Model {
     pub overview: String,
     pub number_of_seasons: i32,
     pub number_of_episodes: i32,
-    pub create_time: OffsetDateTime,
-    pub update_time: OffsetDateTime,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

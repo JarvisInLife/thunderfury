@@ -20,8 +20,6 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Tv::Overview).string().not_null())
                     .col(ColumnDef::new(Tv::NumberOfSeasons).integer().not_null())
                     .col(ColumnDef::new(Tv::NumberOfEpisodes).integer().not_null())
-                    .col(ColumnDef::new(Tv::CreateTime).timestamp().not_null())
-                    .col(ColumnDef::new(Tv::UpdateTime).timestamp().not_null())
                     .to_owned(),
             )
             .await
@@ -47,6 +45,4 @@ enum Tv {
     Overview,
     NumberOfSeasons,
     NumberOfEpisodes,
-    CreateTime,
-    UpdateTime,
 }
