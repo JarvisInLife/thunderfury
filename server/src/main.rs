@@ -1,12 +1,15 @@
+use std::{net::SocketAddr, str::FromStr};
+
+use actix_web::{middleware, web, App, HttpServer};
 use clap::{Args, Parser, Subcommand};
 use sea_orm::{ConnectOptions, Database, DatabaseConnection};
+use tracing::info;
 
 mod api;
 mod config;
 mod entity;
 mod logger;
 mod migration;
-mod server;
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -70,11 +73,27 @@ async fn main() {
         Commands::Server(args) => {
             let db = init_db(args.data_dir.as_str()).await;
             migration::up(&db).await.unwrap();
-            server::run(db).await.unwrap();
+            run(db).await.unwrap();
         }
         Commands::Migrate(args) => {
             let db = init_db(args.data_dir.as_str()).await;
             migration::fresh(&db).await.unwrap();
         }
     }
+}
+
+async fn run(db: DatabaseConnection) -> std::io::Result<()> {
+    let addr = SocketAddr::from_str("0.0.0.0:3000").unwrap();
+    info!("server starting on {}", addr);
+
+    HttpServer::new(move || {
+        App::new()
+            .app_data(web::Data::new(db.clone()))
+            .wrap(middleware::Logger::default())
+            .service(web::resource("/health").to(|| async { "I am working!" }))
+            .configure(api::api)
+    })
+    .bind(addr)?
+    .run()
+    .await
 }

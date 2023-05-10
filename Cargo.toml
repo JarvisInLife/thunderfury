@@ -1,2 +1,2 @@
 [workspace]
-members = [ "app/thunderfury" ]
+members = [ "server" ]

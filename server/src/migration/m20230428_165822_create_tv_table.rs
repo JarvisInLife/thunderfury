@@ -11,15 +11,21 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Tv::Table)
                     .if_not_exists()
-                    .col(ColumnDef::new(Tv::Id).uuid().not_null().primary_key())
+                    .col(
+                        ColumnDef::new(Tv::Id)
+                            .integer()
+                            .not_null()
+                            .auto_increment()
+                            .primary_key(),
+                    )
                     .col(ColumnDef::new(Tv::Title).string().not_null())
                     .col(ColumnDef::new(Tv::Year).integer().not_null())
                     .col(ColumnDef::new(Tv::Status).string().not_null())
+                    .col(ColumnDef::new(Tv::TmdbId).integer().not_null())
                     .col(ColumnDef::new(Tv::OriginalLanguage).string().not_null())
                     .col(ColumnDef::new(Tv::OriginalTitle).string().not_null())
                     .col(ColumnDef::new(Tv::Overview).string().not_null())
-                    .col(ColumnDef::new(Tv::NumberOfSeasons).integer().not_null())
-                    .col(ColumnDef::new(Tv::NumberOfEpisodes).integer().not_null())
+                    .index(Index::create().unique().name("uk_tmdb_id").col(Tv::TmdbId))
                     .to_owned(),
             )
             .await
@@ -40,9 +46,8 @@ enum Tv {
     Title,
     Year,
     Status,
+    TmdbId,
     OriginalLanguage,
     OriginalTitle,
     Overview,
-    NumberOfSeasons,
-    NumberOfEpisodes,
 }
