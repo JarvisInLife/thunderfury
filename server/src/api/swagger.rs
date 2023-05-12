@@ -6,6 +6,6 @@ use crate::entity::tv;
 #[derive(OpenApi)]
 #[openapi(
     paths(library::tv::list_tv, library::tv::new_tv),
-    components(schemas(tv::Model))
+    components(schemas(tv::Model, library::tv::NewTvRequest))
 )]
 pub struct ApiDoc;

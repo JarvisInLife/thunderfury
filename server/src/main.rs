@@ -2,14 +2,16 @@ use std::{net::SocketAddr, str::FromStr};
 
 use actix_web::{middleware, web, App, HttpServer};
 use clap::{Args, Parser, Subcommand};
+use config::{Config, File};
 use sea_orm::{ConnectOptions, Database, DatabaseConnection};
 use tracing::info;
 
 mod api;
-mod config;
+mod common;
 mod entity;
 mod logger;
 mod migration;
+mod third_party;
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -71,9 +73,9 @@ async fn main() {
 
     match &cli.command {
         Commands::Server(args) => {
-            let db = init_db(args.data_dir.as_str()).await;
+            let db = init_db(&args.data_dir).await;
             migration::up(&db).await.unwrap();
-            run(db).await.unwrap();
+            run(db, &args.data_dir).await.unwrap();
         }
         Commands::Migrate(args) => {
             let db = init_db(args.data_dir.as_str()).await;
@@ -82,13 +84,23 @@ async fn main() {
     }
 }
 
-async fn run(db: DatabaseConnection) -> std::io::Result<()> {
+async fn run(db: DatabaseConnection, data_dir: &str) -> std::io::Result<()> {
+    let settings = Config::builder()
+        .add_source(File::with_name(&format!("{}/config.toml", data_dir)))
+        .build()
+        .unwrap();
+
+    let state = web::Data::new(common::AppState {
+        db,
+        tmdb: third_party::tmdb::Client::new(settings.get_string("tmdb_api_key").unwrap()),
+    });
+
     let addr = SocketAddr::from_str("0.0.0.0:3000").unwrap();
     info!("server starting on {}", addr);
 
     HttpServer::new(move || {
         App::new()
-            .app_data(web::Data::new(db.clone()))
+            .app_data(state.clone())
             .wrap(middleware::Logger::default())
             .service(web::resource("/health").to(|| async { "I am working!" }))
             .configure(api::api)
