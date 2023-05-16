@@ -1,1 +1,8 @@
-pub type Result<T> = std::result::Result<T, anyhow::Error>;
+#[derive(Debug, thiserror::Error)]
+pub enum Error {
+    #[error("{0}")]
+    TvNotFound(String),
+
+    #[error("{0}")]
+    InternalError(String),
+}

@@ -1,14 +1,11 @@
-use crate::common::AppState;
-use crate::entity::tv;
-use actix_web::{
-    get, post,
-    web::{self, Json},
-    HttpResponse,
-};
+use actix_web::{get, post, web};
 use sea_orm::{ActiveModelTrait, EntityTrait, Set};
 use serde::Deserialize;
-use tracing::{error, info};
+use tracing::info;
 use utoipa::ToSchema;
+
+use crate::{api::error::ok, common::AppState};
+use crate::{api::error::ApiResult, entity::tv};
 
 #[utoipa::path(
     get,
@@ -18,11 +15,8 @@ use utoipa::ToSchema;
     )
 )]
 #[get("/library/tv")]
-pub async fn list_tv(state: web::Data<AppState>) -> HttpResponse {
-    match tv::Entity::find().all(&state.db).await {
-        Ok(tv) => HttpResponse::Ok().json(Json(tv)),
-        Err(e) => HttpResponse::InternalServerError().body(e.to_string()),
-    }
+pub async fn list_tv(state: web::Data<AppState>) -> ApiResult<Vec<tv::Model>> {
+    ok(tv::Entity::find().all(&state.db).await?)
 }
 
 #[utoipa::path(
@@ -34,7 +28,10 @@ pub async fn list_tv(state: web::Data<AppState>) -> HttpResponse {
     )
 )]
 #[post("/library/tv")]
-pub async fn new_tv(state: web::Data<AppState>, request: web::Json<NewTvRequest>) -> HttpResponse {
+pub async fn new_tv(
+    state: web::Data<AppState>,
+    request: web::Json<NewTvRequest>,
+) -> ApiResult<tv::Model> {
     let detail = state.tmdb.get_tv_detail(request.tmdb_id).await.unwrap();
 
     info!("{:?}", detail);
@@ -49,13 +46,7 @@ pub async fn new_tv(state: web::Data<AppState>, request: web::Json<NewTvRequest>
         overview: Set(detail.overview),
         ..Default::default()
     };
-    match new_tv.insert(&state.db).await {
-        Ok(tv) => HttpResponse::Ok().json(Json(tv)),
-        Err(e) => {
-            error!("{}", e);
-            HttpResponse::InternalServerError().body(e.to_string())
-        }
-    }
+    ok(new_tv.insert(&state.db).await?)
 }
 
 #[derive(Deserialize, ToSchema)]
