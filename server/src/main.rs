@@ -92,7 +92,7 @@ async fn run(db: DatabaseConnection, data_dir: &str) -> std::io::Result<()> {
 
     let state = web::Data::new(common::AppState {
         db,
-        tmdb: third_party::tmdb::Client::new(settings.get_string("tmdb_api_key").unwrap()),
+        tmdb: third_party::tmdb::Client::new(settings.get_string("tmdb_api_token").unwrap()),
     });
 
     let addr = SocketAddr::from_str("0.0.0.0:3000").unwrap();

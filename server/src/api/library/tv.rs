@@ -1,5 +1,5 @@
 use actix_web::{get, post, web};
-use sea_orm::{ActiveModelTrait, EntityTrait, Set};
+use sea_orm::{ActiveModelTrait, ColumnTrait, EntityTrait, QueryFilter, Set};
 use serde::Deserialize;
 use tracing::info;
 use utoipa::ToSchema;
@@ -32,6 +32,14 @@ pub async fn new_tv(
     state: web::Data<AppState>,
     request: web::Json<NewTvRequest>,
 ) -> ApiResult<tv::Model> {
+    if let Some(exist_tv) = tv::Entity::find()
+        .filter(tv::Column::TmdbId.eq(request.tmdb_id))
+        .one(&state.db)
+        .await?
+    {
+        return ok(exist_tv);
+    }
+
     let detail = state.tmdb.get_tv_detail(request.tmdb_id).await.unwrap();
 
     info!("{:?}", detail);
