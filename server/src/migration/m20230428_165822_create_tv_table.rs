@@ -26,6 +26,13 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Tv::OriginalTitle).string().not_null())
                     .col(ColumnDef::new(Tv::Overview).string().not_null())
                     .index(Index::create().unique().name("uk_tmdb_id").col(Tv::TmdbId))
+                    .index(
+                        Index::create()
+                            .unique()
+                            .name("uk_title_year")
+                            .col(Tv::Title)
+                            .col(Tv::Year),
+                    )
                     .to_owned(),
             )
             .await

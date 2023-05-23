@@ -1,11 +1,12 @@
 use actix_web::{get, post, web};
 use sea_orm::{ActiveModelTrait, ColumnTrait, EntityTrait, QueryFilter, Set};
 use serde::Deserialize;
-use tracing::info;
 use utoipa::ToSchema;
 
-use crate::{api::error::ok, common::AppState};
-use crate::{api::error::ApiResult, entity::tv};
+use crate::api::error::{ok, ApiResult};
+use crate::common::{AppState, Error};
+use crate::entity::tv;
+use crate::third_party::tmdb;
 
 #[utoipa::path(
     get,
@@ -40,9 +41,16 @@ pub async fn new_tv(
         return ok(exist_tv);
     }
 
-    let detail = state.tmdb.get_tv_detail(request.tmdb_id).await.unwrap();
-
-    info!("{:?}", detail);
+    let detail = match state.tmdb.get_tv_detail(request.tmdb_id).await {
+        Ok(detail) => detail,
+        Err(tmdb::Error::NotFound) => {
+            return Err(Error::TvNotFound(format!(
+                "can not find tv {} in tmdb",
+                request.tmdb_id
+            )))
+        }
+        Err(err) => return Err(Error::InternalError(err.to_string())),
+    };
 
     let new_tv = tv::ActiveModel {
         title: Set(detail.name),
@@ -54,6 +62,7 @@ pub async fn new_tv(
         overview: Set(detail.overview),
         ..Default::default()
     };
+
     ok(new_tv.insert(&state.db).await?)
 }
 

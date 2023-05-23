@@ -50,3 +50,9 @@ impl From<DbErr> for Error {
         Self::InternalError(err.to_string())
     }
 }
+
+impl From<anyhow::Error> for Error {
+    fn from(err: anyhow::Error) -> Self {
+        Self::InternalError(err.to_string())
+    }
+}

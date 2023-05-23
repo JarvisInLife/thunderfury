@@ -1,10 +1,10 @@
 pub mod model;
 
-use std::fmt::Display;
-
+pub use model::Error;
 use model::TvDetail;
-use reqwest::IntoUrl;
+use reqwest::{IntoUrl, StatusCode};
 use serde::de::DeserializeOwned;
+use std::fmt::Display;
 
 const TMDB_HOST: &str = "https://api.themoviedb.org/3";
 
@@ -28,26 +28,36 @@ impl Client {
         }
     }
 
-    async fn get<U: IntoUrl + Display, T: DeserializeOwned>(&self, url: U) -> anyhow::Result<T> {
-        let response = self.client.get(url).bearer_auth(&self.token).send().await?;
-        if !response.status().is_success() {
-            // http request failed
-            let u = response.url().to_string();
-            let status = response.status();
-            let body = response
-                .text()
-                .await
-                .unwrap_or_else(|e| format!("parse response body to string error, {}", e));
+    async fn get<U: IntoUrl + Display, T: DeserializeOwned>(&self, url: U) -> Result<T, Error> {
+        let response = self
+            .client
+            .get(url)
+            .bearer_auth(&self.token)
+            .query(&[("language", "zh-CN")])
+            .send()
+            .await?;
 
-            return Err(anyhow::anyhow!(
-                "http get {u} failed, status: {status}, body: {body}",
-            ));
+        if response.status().is_success() {
+            return Ok(response.json().await?);
         }
 
-        Ok(response.json().await?)
+        let u = response.url().to_string();
+        let status = response.status();
+        let body = response
+            .text()
+            .await
+            .unwrap_or_else(|e| format!("parse response body to string error, {}", e));
+
+        match status {
+            StatusCode::UNAUTHORIZED => Err(Error::Unauthorized(body)),
+            StatusCode::NOT_FOUND => Err(Error::NotFound),
+            _ => Err(Error::Other(format!(
+                "http get {u} failed, status: {status}, body: {body}"
+            ))),
+        }
     }
 
-    pub async fn get_tv_detail(&self, id: i32) -> anyhow::Result<TvDetail> {
+    pub async fn get_tv_detail(&self, id: i32) -> Result<TvDetail, Error> {
         Ok(self.get(build_url!("/tv/{}", id)).await?)
     }
 }

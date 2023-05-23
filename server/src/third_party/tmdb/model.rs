@@ -1,5 +1,23 @@
 use serde::Deserialize;
 
+#[derive(Debug, thiserror::Error)]
+pub enum Error {
+    #[error("{0}")]
+    Unauthorized(String),
+
+    #[error("{self}")]
+    NotFound,
+
+    #[error("{0}")]
+    Other(String),
+}
+
+impl From<reqwest::Error> for Error {
+    fn from(err: reqwest::Error) -> Self {
+        Self::Other(err.to_string())
+    }
+}
+
 #[derive(Debug, Deserialize)]
 pub struct TvDetail {
     pub id: i32,
