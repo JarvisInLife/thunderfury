@@ -1,4 +1,3 @@
-use crate::common::Error;
 use actix_web::{
     body::BoxBody, error::JsonPayloadError, http::StatusCode, web::Json, HttpResponse,
     HttpResponseBuilder, ResponseError,
@@ -6,11 +5,7 @@ use actix_web::{
 use sea_orm::DbErr;
 use serde::Serialize;
 
-#[derive(Debug, Serialize)]
-struct ApiError {
-    code: String,
-    message: String,
-}
+use crate::common::error::Error;
 
 pub type ApiResult<T> = Result<Json<T>, Error>;
 
@@ -18,17 +13,34 @@ pub fn ok<T>(t: T) -> ApiResult<T> {
     ApiResult::Ok(Json(t))
 }
 
+impl Error {
+    #[inline]
+    fn code(&self) -> String {
+        match self {
+            Self::InvalidArgument(_) => "InvalidArgument".to_string(),
+            Self::NotFound(c, _) => c.to_string(),
+            _ => "Internal".to_string(),
+        }
+    }
+}
+
+#[derive(Debug, Serialize)]
+struct ApiError {
+    code: String,
+    message: String,
+}
+
 impl ResponseError for Error {
     fn status_code(&self) -> StatusCode {
         match self {
-            Self::InternalError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Self::Internal(_) => StatusCode::INTERNAL_SERVER_ERROR,
             _ => StatusCode::BAD_REQUEST,
         }
     }
 
     fn error_response(&self) -> HttpResponse<BoxBody> {
         let e = ApiError {
-            code: self.to_string(),
+            code: self.code(),
             message: self.to_string(),
         };
         match serde_json::to_string(&e) {
@@ -47,12 +59,12 @@ impl ResponseError for Error {
 
 impl From<DbErr> for Error {
     fn from(err: DbErr) -> Self {
-        Self::InternalError(err.to_string())
+        Self::Internal(err.to_string())
     }
 }
 
 impl From<anyhow::Error> for Error {
     fn from(err: anyhow::Error) -> Self {
-        Self::InternalError(err.to_string())
+        Self::Internal(err.to_string())
     }
 }

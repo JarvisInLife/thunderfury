@@ -4,7 +4,8 @@ use serde::Deserialize;
 use utoipa::ToSchema;
 
 use crate::api::error::{ok, ApiResult};
-use crate::common::{AppState, Error};
+use crate::common::error::{Error, NotFoundCode};
+use crate::common::AppState;
 use crate::entity::tv;
 use crate::third_party::tmdb;
 
@@ -43,13 +44,13 @@ pub async fn new_tv(
 
     let detail = match state.tmdb.get_tv_detail(request.tmdb_id).await {
         Ok(detail) => detail,
-        Err(tmdb::Error::NotFound) => {
-            return Err(Error::TvNotFound(format!(
-                "can not find tv {} in tmdb",
-                request.tmdb_id
-            )))
+        Err(tmdb::TmdbError::NotFound) => {
+            return Err(Error::NotFound(
+                NotFoundCode::TvNotFound,
+                format!("can not find tv {} in tmdb", request.tmdb_id),
+            ))
         }
-        Err(err) => return Err(Error::InternalError(err.to_string())),
+        Err(err) => return Err(Error::Internal(err.to_string())),
     };
 
     let new_tv = tv::ActiveModel {

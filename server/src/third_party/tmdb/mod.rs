@@ -1,6 +1,6 @@
 pub mod model;
 
-pub use model::Error;
+pub use model::TmdbError;
 use model::TvDetail;
 use reqwest::{IntoUrl, StatusCode};
 use serde::de::DeserializeOwned;
@@ -28,7 +28,7 @@ impl Client {
         }
     }
 
-    async fn get<U: IntoUrl + Display, T: DeserializeOwned>(&self, url: U) -> Result<T, Error> {
+    async fn get<U: IntoUrl + Display, T: DeserializeOwned>(&self, url: U) -> Result<T, TmdbError> {
         let response = self
             .client
             .get(url)
@@ -49,15 +49,15 @@ impl Client {
             .unwrap_or_else(|e| format!("parse response body to string error, {}", e));
 
         match status {
-            StatusCode::UNAUTHORIZED => Err(Error::Unauthorized(body)),
-            StatusCode::NOT_FOUND => Err(Error::NotFound),
-            _ => Err(Error::Other(format!(
+            StatusCode::UNAUTHORIZED => Err(TmdbError::Unauthorized(body)),
+            StatusCode::NOT_FOUND => Err(TmdbError::NotFound),
+            _ => Err(TmdbError::Other(format!(
                 "http get {u} failed, status: {status}, body: {body}"
             ))),
         }
     }
 
-    pub async fn get_tv_detail(&self, id: i32) -> Result<TvDetail, Error> {
+    pub async fn get_tv_detail(&self, id: i32) -> Result<TvDetail, TmdbError> {
         Ok(self.get(build_url!("/tv/{}", id)).await?)
     }
 }

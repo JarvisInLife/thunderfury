@@ -1,18 +1,18 @@
 use serde::Deserialize;
 
 #[derive(Debug, thiserror::Error)]
-pub enum Error {
+pub enum TmdbError {
     #[error("{0}")]
     Unauthorized(String),
 
-    #[error("{self}")]
+    #[error("not found")]
     NotFound,
 
     #[error("{0}")]
     Other(String),
 }
 
-impl From<reqwest::Error> for Error {
+impl From<reqwest::Error> for TmdbError {
     fn from(err: reqwest::Error) -> Self {
         Self::Other(err.to_string())
     }

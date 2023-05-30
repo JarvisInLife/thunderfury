@@ -1,8 +1,16 @@
+#[derive(Debug, strum::Display)]
+pub enum NotFoundCode {
+    TvNotFound,
+}
+
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
-    #[error("{0}")]
-    TvNotFound(String),
+    #[error("invalid argument, {0}")]
+    InvalidArgument(String),
 
-    #[error("{0}")]
-    InternalError(String),
+    #[error("not found, code {0}, message {1}")]
+    NotFound(NotFoundCode, String),
+
+    #[error("internal error, {0}")]
+    Internal(String),
 }
