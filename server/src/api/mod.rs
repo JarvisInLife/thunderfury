@@ -4,6 +4,7 @@ use utoipa_swagger_ui::SwaggerUi;
 
 mod error;
 mod library;
+mod model;
 mod swagger;
 
 pub fn api(cfg: &mut web::ServiceConfig) {
