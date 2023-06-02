@@ -9,30 +9,23 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(Season::Table)
+                    .table(Subscription::Table)
                     .if_not_exists()
                     .col(
-                        ColumnDef::new(Season::Id)
+                        ColumnDef::new(Subscription::Id)
                             .integer()
                             .not_null()
                             .auto_increment()
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(Season::TvId).integer().not_null())
-                    .col(ColumnDef::new(Season::SeasonNumber).integer().not_null())
-                    .col(ColumnDef::new(Season::Year).integer().not_null())
-                    .col(ColumnDef::new(Season::Status).string().not_null())
-                    .col(
-                        ColumnDef::new(Season::NumberOfEpisodes)
-                            .integer()
-                            .not_null(),
-                    )
+                    .col(ColumnDef::new(Subscription::MediaType).string().not_null())
+                    .col(ColumnDef::new(Subscription::MediaId).integer().not_null())
                     .index(
                         Index::create()
                             .unique()
-                            .name("uk_tv_season")
-                            .col(Season::TvId)
-                            .col(Season::SeasonNumber),
+                            .name("uk_media")
+                            .col(Subscription::MediaType)
+                            .col(Subscription::MediaId),
                     )
                     .to_owned(),
             )
@@ -41,19 +34,16 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(Season::Table).to_owned())
+            .drop_table(Table::drop().table(Subscription::Table).to_owned())
             .await
     }
 }
 
 /// Learn more at https://docs.rs/sea-query#iden
 #[derive(Iden)]
-enum Season {
+enum Subscription {
     Table,
     Id,
-    TvId,
-    SeasonNumber,
-    Year,
-    Status,
-    NumberOfEpisodes,
+    MediaType,
+    MediaId,
 }

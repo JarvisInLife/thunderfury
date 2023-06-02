@@ -1,11 +1,16 @@
 use utoipa::OpenApi;
 
 use super::library;
-use crate::entity::tv;
+use super::model;
 
 #[derive(OpenApi)]
 #[openapi(
     paths(library::tv::list_tv, library::tv::new_tv),
-    components(schemas(tv::Model, library::tv::NewTvRequest))
+    components(schemas(
+        model::tv::TvDetail,
+        model::tv::NewTvRequest,
+        model::movie::MovieDetail,
+        model::genre::Genre
+    ))
 )]
 pub struct ApiDoc;

@@ -17,4 +17,4 @@ orm-cli:
 	command -v $(CLI) > /dev/null || cargo install $(CLI)
 
 entity: migrate orm-cli
-	$(DB) $(CLI) generate entity -o server/src/entity --with-serde serialize
+	$(DB) $(CLI) generate entity -o server/src/entity

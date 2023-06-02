@@ -3,5 +3,8 @@
 pub mod prelude;
 
 pub mod episode;
+pub mod genre;
+pub mod movie;
 pub mod season;
+pub mod subscription;
 pub mod tv;

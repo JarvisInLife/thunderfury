@@ -9,30 +9,33 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(Tv::Table)
+                    .table(Movie::Table)
                     .if_not_exists()
                     .col(
-                        ColumnDef::new(Tv::Id)
+                        ColumnDef::new(Movie::Id)
                             .integer()
                             .not_null()
                             .auto_increment()
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(Tv::Name).string().not_null())
-                    .col(ColumnDef::new(Tv::Year).integer().not_null())
-                    .col(ColumnDef::new(Tv::Status).string().not_null())
-                    .col(ColumnDef::new(Tv::FirstAirDate).string().not_null())
-                    .col(ColumnDef::new(Tv::LastAirDate).string().not_null())
-                    .col(ColumnDef::new(Tv::NumberOfSeasons).integer().not_null())
-                    .col(ColumnDef::new(Tv::TmdbId).integer().not_null())
-                    .col(ColumnDef::new(Tv::Overview).string().not_null())
-                    .index(Index::create().unique().name("uk_tmdb_id").col(Tv::TmdbId))
+                    .col(ColumnDef::new(Movie::Name).string().not_null())
+                    .col(ColumnDef::new(Movie::Year).integer().not_null())
+                    .col(ColumnDef::new(Movie::Status).string().not_null())
+                    .col(ColumnDef::new(Movie::ReleaseData).string().not_null())
+                    .col(ColumnDef::new(Movie::TmdbId).integer().not_null())
+                    .col(ColumnDef::new(Movie::Overview).string().not_null())
+                    .index(
+                        Index::create()
+                            .unique()
+                            .name("uk_tmdb_id")
+                            .col(Movie::TmdbId),
+                    )
                     .index(
                         Index::create()
                             .unique()
                             .name("uk_name_year")
-                            .col(Tv::Name)
-                            .col(Tv::Year),
+                            .col(Movie::Name)
+                            .col(Movie::Year),
                     )
                     .to_owned(),
             )
@@ -41,22 +44,20 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(Tv::Table).to_owned())
+            .drop_table(Table::drop().table(Movie::Table).to_owned())
             .await
     }
 }
 
 /// Learn more at https://docs.rs/sea-query#iden
 #[derive(Iden)]
-enum Tv {
+enum Movie {
     Table,
     Id,
     Name,
     Year,
     Status,
-    FirstAirDate,
-    LastAirDate,
-    NumberOfSeasons,
+    ReleaseData,
     TmdbId,
     Overview,
 }
