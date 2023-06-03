@@ -20,6 +20,7 @@ impl MigrationTrait for Migration {
                     )
                     .col(ColumnDef::new(Subscription::MediaType).string().not_null())
                     .col(ColumnDef::new(Subscription::MediaId).integer().not_null())
+                    .col(ColumnDef::new(Subscription::Status).string().not_null())
                     .index(
                         Index::create()
                             .unique()
@@ -46,4 +47,5 @@ enum Subscription {
     Id,
     MediaType,
     MediaId,
+    Status,
 }
