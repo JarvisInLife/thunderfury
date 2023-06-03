@@ -1,11 +1,15 @@
 use utoipa::OpenApi;
 
-use super::library;
-use super::model;
+use super::{genre, library, model};
 
 #[derive(OpenApi)]
 #[openapi(
-    paths(library::tv::list_tv, library::tv::new_tv),
+    paths(
+        library::tv::list_tvs,
+        library::tv::new_tv,
+        library::movie::list_movies,
+        genre::list_genres
+    ),
     components(schemas(
         model::tv::TvDetail,
         model::tv::NewTvRequest,

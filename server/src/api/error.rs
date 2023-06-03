@@ -17,7 +17,7 @@ impl Error {
     #[inline]
     fn code(&self) -> String {
         match self {
-            Self::InvalidArgument(_) => "InvalidArgument".to_string(),
+            // Self::InvalidArgument(_) => "InvalidArgument".to_string(),
             Self::NotFound(c, _) => c.to_string(),
             _ => "Internal".to_string(),
         }

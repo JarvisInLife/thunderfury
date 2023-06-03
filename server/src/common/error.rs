@@ -5,9 +5,8 @@ pub enum NotFoundCode {
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
-    #[error("invalid argument, {0}")]
-    InvalidArgument(String),
-
+    // #[error("invalid argument, {0}")]
+    // InvalidArgument(String),
     #[error("not found, code: {0}, message: {1}")]
     NotFound(NotFoundCode, String),
 

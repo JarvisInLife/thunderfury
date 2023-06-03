@@ -1,12 +1,18 @@
 use actix_web::{get, post, web};
 use sea_orm::{ActiveModelTrait, ColumnTrait, EntityTrait, QueryFilter, Set};
 
-use crate::api::error::{ok, ApiResult};
-use crate::api::model::tv::{NewTvRequest, TvDetail};
-use crate::common::error::{Error, NotFoundCode};
-use crate::common::AppState;
-use crate::entity::tv;
-use crate::third_party::tmdb;
+use crate::{
+    api::{
+        error::{ok, ApiResult},
+        model::tv::{NewTvRequest, TvDetail},
+    },
+    common::{
+        error::{Error, NotFoundCode},
+        AppState,
+    },
+    entity::tv,
+    third_party::tmdb,
+};
 
 #[utoipa::path(
     get,
@@ -15,8 +21,8 @@ use crate::third_party::tmdb;
         (status = 200, body = Vec<TvDetail>),
     )
 )]
-#[get("/library/tv")]
-pub async fn list_tv(state: web::Data<AppState>) -> ApiResult<Vec<TvDetail>> {
+#[get("/library/tvs")]
+pub async fn list_tvs(state: web::Data<AppState>) -> ApiResult<Vec<TvDetail>> {
     ok(tv::Entity::find()
         .all(&state.db)
         .await?
