@@ -17,14 +17,14 @@ macro_rules! build_url {
 
 pub struct Client {
     client: reqwest::Client,
-    token: String,
+    api_key: String,
 }
 
 impl Client {
-    pub fn new(token: String) -> Self {
+    pub fn new(api_key: String) -> Self {
         Client {
             client: reqwest::Client::new(),
-            token,
+            api_key,
         }
     }
 
@@ -32,8 +32,7 @@ impl Client {
         let response = self
             .client
             .get(url)
-            .bearer_auth(&self.token)
-            .query(&[("language", "zh-CN")])
+            .query(&[("language", "zh-CN"), ("api_key", self.api_key.as_str())])
             .send()
             .await?;
 
