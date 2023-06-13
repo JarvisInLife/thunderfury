@@ -1,4 +1,4 @@
-use actix_web::web::{self};
+use actix_web::web::{self, service};
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
@@ -8,6 +8,7 @@ mod library;
 mod model;
 mod subscription;
 mod swagger;
+mod test;
 
 pub fn api(cfg: &mut web::ServiceConfig) {
     cfg.service(
@@ -19,6 +20,7 @@ pub fn api(cfg: &mut web::ServiceConfig) {
             .service(library::movie::list_movies)
             .service(genre::list_genres)
             .service(subscription::list_subscriptions)
-            .service(subscription::new_subscription_from_mikan_rss),
+            .service(subscription::new_subscription_from_mikan_rss)
+            .service(test::test),
     );
 }

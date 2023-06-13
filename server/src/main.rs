@@ -9,6 +9,7 @@ use tracing::info;
 mod api;
 mod common;
 mod entity;
+mod job;
 mod logger;
 mod migration;
 mod third_party;

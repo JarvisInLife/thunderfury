@@ -1,6 +1,6 @@
 use utoipa::OpenApi;
 
-use super::{genre, library, model, subscription};
+use super::{genre, library, model, subscription, test};
 
 #[derive(OpenApi)]
 #[openapi(
@@ -9,7 +9,8 @@ use super::{genre, library, model, subscription};
         library::movie::list_movies,
         genre::list_genres,
         subscription::list_subscriptions,
-        subscription::new_subscription_from_mikan_rss
+        subscription::new_subscription_from_mikan_rss,
+        test::test
     ),
     components(schemas(
         model::tv::TvDetail,
