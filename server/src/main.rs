@@ -13,6 +13,7 @@ mod job;
 mod logger;
 mod migration;
 mod third_party;
+mod utils;
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
