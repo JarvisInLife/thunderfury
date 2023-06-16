@@ -30,7 +30,13 @@ mod test {
             "[桜都字幕组] 因为太怕痛就全点防御力了。 第2季 / Itai No Wa Iya Nano De Bougyoryoku Ni Kyokufuri Shitai To Omoimasu. S2 [10][1080P@60FPS][简繁内封]",
             "[桜都字幕组] 因为太怕痛就全点防御力了。 第2季 / Itai No Wa Iya Nano De Bougyoryoku Ni Kyokufuri Shitai To Omoimasu. Season 2 [10][1080p][简繁内封]",
             "[爱恋字幕社&猫恋汉化组][1月新番][因为太怕痛就全点防御力了。 第二季][Bofuri S2][10][1080P][MP4][GB][简中]",
-            "【个人翻译】[因为太怕痛就全点防御力了][S02E01][Web先行版][1080P][简体内封][AVC AAC][mkv]【2023年1月新番】"
+            "【个人翻译】[因为太怕痛就全点防御力了][S02E01][Web先行版][1080P][简体内封][AVC AAC][mkv]【2023年1月新番】",
+            "20.mp4",
+            "A_20.mp4",
+            "A_4K_20.mp4",
+            "A_20_4K.mp4",
+            "A.B.C.20.mp4",
+            "A.B.C.20.4k.mp4",
         ];
         for c in cases {
             println!("{:#?}", parse_episode(c));
