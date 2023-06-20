@@ -26,3 +26,4 @@ config = { version = "0.13", features = ["toml"] }
 strum = { version = "0.24", features = ["derive"] }
 rss = "2.0"
 regex = "1"
+lazy_static = "1.4"

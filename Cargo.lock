@@ -2953,6 +2953,7 @@ dependencies = [
  "clap 4.2.5",
  "config",
  "futures",
+ "lazy_static",
  "regex",
  "reqwest",
  "rss",

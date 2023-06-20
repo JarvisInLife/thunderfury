@@ -1,4 +1,4 @@
-use actix_web::web::{self, service};
+use actix_web::web;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
