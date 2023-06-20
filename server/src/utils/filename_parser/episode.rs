@@ -11,6 +11,8 @@ impl From<&str> for EpisodeInfo {
         filename = info.parse_resolution(filename);
         filename = info.parse_season_and_episode_number(filename);
 
+        println!("{}", filename);
+
         info
     }
 }
@@ -30,7 +32,7 @@ impl EpisodeInfo {
                 self.episode_number = Some(episode_number.as_str().parse().unwrap());
             }
 
-            return filename.replace(caps.get(0).unwrap().as_str(), "");
+            return filename.replace(caps.get(0).unwrap().as_str(), " ");
         } else {
             return filename;
         }
@@ -54,7 +56,7 @@ impl EpisodeInfo {
                 self.resolution = Some(resolution);
             }
 
-            return filename.replace(caps.get(0).unwrap().as_str(), "");
+            return filename.replace(caps.get(0).unwrap().as_str(), " ");
         } else {
             return filename;
         }
