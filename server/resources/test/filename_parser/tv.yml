@@ -1,0 +1,80 @@
+- input: "20.mp4"
+  expected:
+    episode_number: 20
+
+- input: "A_20.mp4"
+  expected:
+    title: "A"
+    episode_number: 20
+
+- input: "A_4K_20.mp4"
+  expected:
+    title: "A"
+    episode_number: 20
+    resolution: "2160p"
+
+- input: "A_20_4K.mp4"
+  expected:
+    title: "A"
+    episode_number: 20
+    resolution: "2160p"
+
+- input: "A.B.C.20.mp4"
+  expected:
+    title: "A B C"
+    episode_number: 20
+
+- input: "A.B.C.20.4k.mp4"
+  expected:
+    title: "A B C"
+    episode_number: 20
+    resolution: "2160p"
+
+- input: "【智械尚未危机制作】Isekai One Turn Kill Neesan 异世界一击无双姐姐 ～和姐姐一起开始异世界生活～ - 01精校进化版 (1920x1080 AVC AAC MKV)【附外挂字幕】"
+  expected:
+    title: "Isekai One Turn Kill Neesan 异世界一击无双姐姐 ～和姐姐一起开始异世界生活～"
+    release_group: "智械尚未危机制作"
+    episode_number: 1
+    resolution: "1080p"
+
+- input: "[桜都字幕组] 因为太怕痛就全点防御力了。 第2季 / Itai No Wa Iya Nano De Bougyoryoku Ni Kyokufuri Shitai To Omoimasu. S2 [10][1080P@60FPS][简繁内封]"
+  expected:
+    title: "因为太怕痛就全点防御力了。  / Itai No Wa Iya Nano De Bougyoryoku Ni Kyokufuri Shitai To Omoimasu."
+    release_group: "桜都字幕组"
+    season_number: 2
+    episode_number: 10
+    resolution: "1080p"
+    subtitles:
+      - zh-CN
+      - zh-TW
+
+- input: "[桜都字幕组] 因为太怕痛就全点防御力了。 第2季 / Itai No Wa Iya Nano De Bougyoryoku Ni Kyokufuri Shitai To Omoimasu. Season 2 [10][1080p][简繁内封]"
+  expected:
+    title: "Isekai One Turn Kill Neesan"
+    release_group: "桜都字幕组"
+    season_number: 2
+    episode_number: 10
+    resolution: "1080p"
+    subtitles:
+      - zh-CN
+      - zh-TW
+
+- input: "[爱恋字幕社&猫恋汉化组][1月新番][因为太怕痛就全点防御力了。 第二季][Bofuri S2][10][1080P][MP4][GB][简中]"
+  expected:
+    title: "因为太怕痛就全点防御力了"
+    release_group: "爱恋字幕社&猫恋汉化组"
+    season_number: 2
+    episode_number: 10
+    resolution: "1080p"
+    subtitles:
+      - zh-CN
+
+- input: "【个人翻译】[因为太怕痛就全点防御力了][S02E01][Web先行版][1080P][简体内封][AVC AAC][mkv]【2023年1月新番】"
+  expected:
+    title: "因为太怕痛就全点防御力了"
+    release_group: "个人翻译"
+    season_number: 2
+    episode_number: 1
+    resolution: "1080p"
+    subtitles:
+      - zh-CN
