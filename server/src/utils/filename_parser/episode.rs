@@ -154,7 +154,7 @@ fn nomalize_filename(filename: &str) -> String {
         static ref NORMALIZE_FILENAME_RE_LIST: Vec<Regex> = vec![
             Regex::new(r"(?i)@?\d{2,3}\s*fps").unwrap(),
             Regex::new(r"第[^\d]+季").unwrap(),
-            Regex::new(r"\[(\S{1,4}年)?\S{1,2}月新番\]").unwrap(),
+            Regex::new(r"[\[★](\S{1,4}年)?\S{1,2}月新番[\]★]").unwrap(),
         ];
     }
 
@@ -202,10 +202,5 @@ mod test {
             let episode = EpisodeInfo::from(case.input.as_str());
             assert_eq!(case.expected, episode, "input: {}", case.input);
         }
-    }
-
-    #[test]
-    fn test_one() {
-        println!("{:#?}", EpisodeInfo::from("[喵萌奶茶屋&LoliHouse] 与山田谈一场Lv999的恋爱 / Yamada-kun to Lv999 no Koi wo Suru - 12 [WebRip 1080p HEVC-10bit AAC][简繁日内封字幕]"));
     }
 }
