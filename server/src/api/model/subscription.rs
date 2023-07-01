@@ -7,11 +7,13 @@ pub struct SubscriptionDetail {
     pub media_type: String,
     pub media_id: i32,
     pub status: String,
-    pub rss_url: String,
+    pub resource_provider: String,
+    pub resource_url: String,
 }
 
 #[derive(Debug, Deserialize, ToSchema)]
-pub struct NewSubscriptionFromMikanRssRequest {
+pub struct NewSubscriptionRequest {
     pub tmdb_id: i32,
-    pub rss_url: String,
+    pub resource_provider: String,
+    pub resource_url: String,
 }

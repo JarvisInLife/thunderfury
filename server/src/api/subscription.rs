@@ -4,7 +4,7 @@ use sea_orm::{ActiveModelTrait, ColumnTrait, EntityTrait, QueryFilter, Set};
 use crate::{
     api::{
         error::{ok, ApiResult},
-        model::subscription::{NewSubscriptionFromMikanRssRequest, SubscriptionDetail},
+        model::subscription::{NewSubscriptionRequest, SubscriptionDetail},
     },
     common::{
         error::{Error, NotFoundCode, Result},
@@ -36,15 +36,15 @@ pub async fn list_subscriptions(state: web::Data<AppState>) -> ApiResult<Vec<Sub
 #[utoipa::path(
     post,
     context_path = "/api",
-    request_body = NewSubscriptionFromMikanRssRequest,
+    request_body = NewSubscriptionRequest,
     responses(
         (status = 200, body = SubscriptionDetail),
     )
 )]
-#[post("/subscriptions/mikan_rss")]
+#[post("/subscriptions")]
 pub async fn new_subscription_from_mikan_rss(
     state: web::Data<AppState>,
-    request: web::Json<NewSubscriptionFromMikanRssRequest>,
+    request: web::Json<NewSubscriptionRequest>,
 ) -> ApiResult<SubscriptionDetail> {
     if let Some(exist_sub) = get_tv_subscription(&state, request.tmdb_id).await? {
         return ok(exist_sub.into());
@@ -56,7 +56,8 @@ pub async fn new_subscription_from_mikan_rss(
         media_type: Set(MEDIA_TYPE_TV.to_string()),
         media_id: Set(created_tv.id),
         status: Set("".to_string()),
-        rss_url: Set(request.rss_url.to_owned()),
+        resource_provider: Set(request.resource_provider.to_owned()),
+        resource_url: Set(request.resource_url.to_owned()),
         ..Default::default()
     };
 
@@ -70,7 +71,8 @@ impl Into<SubscriptionDetail> for subscription::Model {
             media_type: self.media_type,
             media_id: self.media_id,
             status: self.status,
-            rss_url: self.rss_url,
+            resource_provider: self.resource_provider,
+            resource_url: self.resource_url,
         }
     }
 }

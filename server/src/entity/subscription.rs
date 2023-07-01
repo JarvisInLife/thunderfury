@@ -10,7 +10,8 @@ pub struct Model {
     pub media_type: String,
     pub media_id: i32,
     pub status: String,
-    pub rss_url: String,
+    pub resource_provider: String,
+    pub resource_url: String,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

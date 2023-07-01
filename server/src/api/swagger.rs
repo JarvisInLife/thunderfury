@@ -18,7 +18,7 @@ use super::{genre, library, model, subscription, test};
         model::movie::MovieDetail,
         model::genre::Genre,
         model::subscription::SubscriptionDetail,
-        model::subscription::NewSubscriptionFromMikanRssRequest
+        model::subscription::NewSubscriptionRequest
     ))
 )]
 pub struct ApiDoc;
