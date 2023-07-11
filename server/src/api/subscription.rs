@@ -108,12 +108,20 @@ async fn create_tv(state: &AppState, tmdb_id: i32) -> Result<tv::Model> {
         Err(err) => return Err(Error::Internal(err.to_string())),
     };
 
+    let year: i32 = detail
+        .first_air_date
+        .split("-")
+        .into_iter()
+        .next()
+        .unwrap_or("0")
+        .parse()
+        .unwrap();
+
     let new_tv = tv::ActiveModel {
         name: Set(detail.name),
-        year: Set(2023),
+        year: Set(year),
         status: Set(detail.status),
         first_air_date: Set(detail.first_air_date),
-        last_air_date: Set(detail.last_air_date),
         number_of_seasons: Set(detail.number_of_seasons),
         tmdb_id: Set(detail.id),
         overview: Set(detail.overview),

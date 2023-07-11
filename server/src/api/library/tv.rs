@@ -35,7 +35,6 @@ impl Into<TvDetail> for tv::Model {
             year: self.year,
             status: self.status,
             first_air_date: self.first_air_date,
-            last_air_date: self.last_air_date,
             number_of_seasons: self.number_of_seasons,
             overview: self.overview,
             in_library: true,

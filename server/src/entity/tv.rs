@@ -11,7 +11,6 @@ pub struct Model {
     pub year: i32,
     pub status: String,
     pub first_air_date: String,
-    pub last_air_date: String,
     pub number_of_seasons: i32,
     pub tmdb_id: i32,
     pub overview: String,

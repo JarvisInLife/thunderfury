@@ -22,7 +22,6 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Tv::Year).integer().not_null())
                     .col(ColumnDef::new(Tv::Status).string().not_null())
                     .col(ColumnDef::new(Tv::FirstAirDate).string().not_null())
-                    .col(ColumnDef::new(Tv::LastAirDate).string().not_null())
                     .col(ColumnDef::new(Tv::NumberOfSeasons).integer().not_null())
                     .col(ColumnDef::new(Tv::TmdbId).integer().not_null())
                     .col(ColumnDef::new(Tv::Overview).string().not_null())
@@ -55,7 +54,6 @@ enum Tv {
     Year,
     Status,
     FirstAirDate,
-    LastAirDate,
     NumberOfSeasons,
     TmdbId,
     Overview,
