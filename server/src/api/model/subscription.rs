@@ -13,7 +13,8 @@ pub struct SubscriptionDetail {
 
 #[derive(Debug, Deserialize, ToSchema)]
 pub struct NewSubscriptionRequest {
+    pub media_type: String,
     pub tmdb_id: i32,
     pub resource_provider: String,
-    pub resource_url: String,
+    pub resource_url: Option<String>,
 }

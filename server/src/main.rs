@@ -12,6 +12,7 @@ mod entity;
 mod job;
 mod logger;
 mod migration;
+mod service;
 mod third_party;
 mod utils;
 

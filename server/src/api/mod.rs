@@ -20,7 +20,7 @@ pub fn api(cfg: &mut web::ServiceConfig) {
             .service(library::movie::list_movies)
             .service(genre::list_genres)
             .service(subscription::list_subscriptions)
-            .service(subscription::new_subscription_from_mikan_rss)
+            .service(subscription::new_subscription)
             .service(test::test),
     );
 }

@@ -9,7 +9,7 @@ use super::{genre, library, model, subscription, test};
         library::movie::list_movies,
         genre::list_genres,
         subscription::list_subscriptions,
-        subscription::new_subscription_from_mikan_rss,
+        subscription::new_subscription,
         test::test
     ),
     components(schemas(

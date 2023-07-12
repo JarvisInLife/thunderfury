@@ -42,7 +42,7 @@ pub async fn list_subscriptions(state: web::Data<AppState>) -> ApiResult<Vec<Sub
     )
 )]
 #[post("/subscriptions")]
-pub async fn new_subscription_from_mikan_rss(
+pub async fn new_subscription(
     state: web::Data<AppState>,
     request: web::Json<NewSubscriptionRequest>,
 ) -> ApiResult<SubscriptionDetail> {
